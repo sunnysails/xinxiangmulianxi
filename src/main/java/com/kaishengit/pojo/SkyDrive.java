@@ -10,14 +10,16 @@ import java.sql.Timestamp;
  */
 @Data
 public class SkyDrive implements Serializable {
-    public static final String DIC = "dic";
+    public static final String DIR = "dir";
+    public static final String FILE = "file";
 
     private Integer id;
     private String fileName;
     private String fileType;
-    private Double fileSize;
-    private Integer relationId;
-    private String storeName;
+    private String fileSize;
+    private Integer fid;
+    private String sourceName;
     private Timestamp createTime;
+    private String createUser;
     private Timestamp updateTime;
 }

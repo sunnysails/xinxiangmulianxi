@@ -8,9 +8,15 @@ import java.util.List;
  * Created by sunny on 2017/1/22.
  */
 public interface SkyDriveMapper {
-    List<SkyDrive> findAllByRelationId(Integer relationId);
+    List<SkyDrive> findAllByFid(Integer fid);
 
-    void saveNewDir(SkyDrive skyDrive);
+    void save(SkyDrive skyDrive);
 
-    SkyDrive findById(Integer relationId);
+    SkyDrive findById(Integer fid);
+
+    List<SkyDrive> findAll();
+
+    void delete(Integer id);
+
+    void batchDel(List<Integer> delIdList);
 }

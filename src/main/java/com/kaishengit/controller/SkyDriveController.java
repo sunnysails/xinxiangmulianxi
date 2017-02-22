@@ -1,17 +1,27 @@
 package com.kaishengit.controller;
 
 import com.google.common.collect.Maps;
+import com.kaishengit.dto.AjaxResult;
+import com.kaishengit.exception.NotFoundException;
+import com.kaishengit.exception.ServiceException;
 import com.kaishengit.pojo.SkyDrive;
 import com.kaishengit.service.SkyDriveService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.InputStreamSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
@@ -26,38 +36,56 @@ public class SkyDriveController {
     private SkyDriveService skyDriveService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String skyDriveList(Model model) {
-        int relationId = 0;
-        List<SkyDrive> skyDriveList = skyDriveService.findAllSkyDriveByRelationId(relationId);
+    public String skyDriveList(@RequestParam(required = false, defaultValue = "0") Integer path, Model model) {
+        List<SkyDrive> skyDriveList = skyDriveService.findAllSkyDriveByFid(path);
         model.addAttribute("skyDriveList", skyDriveList);
+        model.addAttribute("fid", path);
         return "/skydrive/list";
     }
 
-    @RequestMapping(value = "/{relationId:\\d+}", method = RequestMethod.GET)
-    public String skyDriveList(@PathVariable Integer relationId, Model model) {
-        SkyDrive skyDrive = skyDriveService.findSkyDriveById(relationId);
-        if (skyDrive == null) {
-            return "redirect:/skydrive";
-        }
-        List<SkyDrive> skyDriveList = skyDriveService.findAllSkyDriveByRelationId(relationId);
-        model.addAttribute("skyDriveList", skyDriveList);
-        return "/skydrive/list";
-    }
-
-    @RequestMapping(value = "/newdic", method = RequestMethod.POST)
+    @RequestMapping(value = "/newdir", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> newDic(HttpServletRequest request) {
-        String newDic = String.valueOf(request.getParameter("inputValue"));
-        Integer relationId = Integer.valueOf(request.getParameter("relationId"));
+    public AjaxResult newDic(SkyDrive skyDrive) {
+        skyDriveService.saveNewDir(skyDrive);
+        return new AjaxResult(AjaxResult.SUCCESS);
+    }
 
-        Boolean date = skyDriveService.saveNewDic(newDic, relationId);
-
-        Map<String, Object> resultMap = Maps.newHashMap();
-        if (date) {
-            resultMap.put("state", "success");
-        } else {
-            resultMap.put("state", "error");
+    @PostMapping("/upload")
+    @ResponseBody
+    public AjaxResult saveFile(Integer fid, MultipartFile file) {
+        try {
+            skyDriveService.saveNewFile(fid, file);
+            return new AjaxResult(AjaxResult.SUCCESS);
+        } catch (ServiceException e) {
+            return new AjaxResult(e.getMessage());
         }
-        return resultMap;
+    }
+
+    /**
+     * 下载文件
+     * @param id
+     * @return
+     */
+    @GetMapping("/download")
+    @ResponseBody
+    public ResponseEntity<InputStreamSource> downloadFile(Integer id) {
+        try {
+            InputStream inputStream = skyDriveService.downloadFile(id);
+            SkyDrive skyDrive = skyDriveService.findSkyDriveById(id);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachement", skyDrive.getSourceName(), Charset.forName("UTF-8"));
+
+            return new ResponseEntity<>(new InputStreamResource(inputStream), headers, HttpStatus.OK);
+        } catch (IOException e) {
+            throw new NotFoundException();
+        }
+    }
+    @GetMapping("/del/{id:\\d+}")
+    @ResponseBody
+    public AjaxResult del(@PathVariable Integer id){
+        skyDriveService.delById(id);
+        return new AjaxResult(AjaxResult.SUCCESS);
     }
 }

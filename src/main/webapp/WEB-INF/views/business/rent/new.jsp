@@ -277,7 +277,7 @@
 
         //文件上传
         var uploder = WebUploader.create({
-            swf: "js/uploader/Uploader.swf",
+            swf: "/static/js/uploader/Uploader.swf",
             server: "/file/upload",
             pick: '#picker',
             auto: true,

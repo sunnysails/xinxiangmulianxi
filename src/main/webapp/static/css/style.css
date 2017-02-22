@@ -78,17 +78,17 @@ ol,ul{margin-bottom:0px; }
 
 
 /* 公司网盘*/
-.dic{
+.dir{
 	width:80px;
 	height:80px;
-	background-image: url(../img/dic.png);
+	background-image: url(../img/dir.png);
 	margin:0px auto;
 	background-repeat: no-repeat; 
 }
-.txt{
+.file{
 	width:80px;
 	height:80px;
-	background-image: url(../img/txt.png);
+	background-image: url(../img/file.png);
 	margin:0px auto;
 	background-repeat: no-repeat; 
 }

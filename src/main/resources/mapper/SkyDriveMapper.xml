@@ -1,19 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.kaishengit.mapper.SkyDriveMapper">
-    <insert id="saveNewDir" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO
-          t_sky_drive (file_name, file_type, relation_id, store_name, update_time)
-        VALUES (#{fileName}, #{fileType}, #{relationId}, #{storeName}, #{updateTime});
+          t_sky_drive (file_name, file_type, file_size, fid, source_name, create_user, update_time)
+        VALUES (#{fileName}, #{fileType}, #{fileSize}, #{fid}, #{sourceName}, #{createUser}, #{updateTime});
     </insert>
-    <select id="findAllByRelationId" resultType="com.kaishengit.pojo.SkyDrive">
+    <delete id="delete">
+        DELETE FROM t_sky_drive
+        WHERE id = #{id}
+    </delete>
+    <delete id="batchDel">
+        DELETE FROM t_sky_drive
+        WHERE id IN (
+        <foreach collection="list" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </delete>
+
+    <select id="findAllByFid" resultType="com.kaishengit.pojo.SkyDrive">
         SELECT *
         FROM t_sky_drive
-        WHERE relation_id = #{relationId};
+        WHERE fid = #{fid};
     </select>
     <select id="findById" resultType="com.kaishengit.pojo.SkyDrive">
         SELECT *
         FROM t_sky_drive
-        WHERE id = #{relationId};
+        WHERE id = #{fid};
+    </select>
+    <select id="findAll" resultType="com.kaishengit.pojo.SkyDrive">
+        SELECT *
+        FROM t_sky_drive
     </select>
 </mapper>

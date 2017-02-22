@@ -67,7 +67,7 @@ public class HomeController {
         //获取登录前的Url
         try {
             String url = WebUtils.getSavedRequest(request).getRequestUrl();
-            if (!url.isEmpty()) {
+            if (!url.isEmpty() && !url.equals("/favicon.ico")) {
                 return "redirect:" + url;
             } else {
                 return "home";
@@ -76,10 +76,6 @@ public class HomeController {
             return "home";
         }
     }
-//    @GetMapping("/home")
-//    public String home(){
-//        return "home";
-//    }
 
     @RequestMapping("/403")
     public String error403() {

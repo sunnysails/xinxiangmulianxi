@@ -22,7 +22,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String uploadFile(String originalFilename, String contentType, InputStream inputStream) {
-        String newFileName = UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));
+        String newFileName = UUID.randomUUID().toString();
         File file = new File(new File(uploadPath), newFileName);
 
         try {

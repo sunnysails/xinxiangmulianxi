@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaishengit.mapper.SkyDriveMapper">
+    <insert id="saveNewDir" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+          t_sky_drive (file_name, file_type, relation_id, store_name, update_time)
+        VALUES (#{fileName}, #{fileType}, #{relationId}, #{storeName}, #{updateTime});
+    </insert>
+    <select id="findAllByRelationId" resultType="com.kaishengit.pojo.SkyDrive">
+        SELECT *
+        FROM t_sky_drive
+        WHERE relation_id = #{relationId};
+    </select>
+    <select id="findById" resultType="com.kaishengit.pojo.SkyDrive">
+        SELECT *
+        FROM t_sky_drive
+        WHERE id = #{relationId};
+    </select>
+</mapper>

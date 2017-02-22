@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaishengit.mapper.UserMapper">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+          t_user (user_account, user_name, email, phone, password)
+          VALUES (#{userAccount}, #{userName}, #{email}, #{phone}, #{password});
+    </insert>
+
+    <update id="update">
+        UPDATE t_user
+        <set>
+            user_name = #{userName}, email = #{email}, phone = #{phone}, state = #{state},
+            <if test="password != null and password != ''">
+                password = #{password}
+            </if>
+        </set>
+        WHERE id = #{id};
+    </update>
+
+    <delete id="delById">
+        DELETE FROM t_user
+        WHERE id = #{userId};
+    </delete>
+
+    <select id="findAll" resultMap="UserMap">
+        <include refid="selectUserAndRoleList"/>
+    </select>
+    <select id="findMaxAccount" resultType="java.lang.Integer">
+        SELECT MAX(t_user.user_account)
+        FROM t_user;
+    </select>
+    <select id="findById" resultMap="UserMap">
+        <include refid="selectUserAndRoleList"/>
+        WHERE tu.id = #{userId};
+    </select>
+    <select id="findByUserName" resultType="com.kaishengit.pojo.User">
+        SELECT *
+        FROM t_user
+        WHERE user_name = #{userName};
+    </select>
+
+    <sql id="selectUserAndRoleList">
+        SELECT
+          tu.*,
+          tur.role_id,
+          tr.view_name,
+          tr.role_name
+        FROM t_user tu
+          LEFT JOIN t_user_role tur ON tu.id = tur.user_id
+          LEFT JOIN t_role tr ON tur.role_id = tr.id
+    </sql>
+
+    <resultMap id="UserMap" type="User">
+        <id column="id" property="id"/>
+        <result column="user_account" property="userAccount"/>
+        <result column="user_name" property="userName"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="password" property="password"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+        <collection property="roleList" ofType="Role">
+            <id column="role_id" property="id"/>
+            <result column="view_name" property="viewName"/>
+            <result column="role_name" property="roleName"/>
+        </collection>
+    </resultMap>
+</mapper>

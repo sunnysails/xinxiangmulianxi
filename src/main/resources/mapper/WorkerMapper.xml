@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaishengit.mapper.WorkerMapper">
+
+    <insert id="saveNew">
+        INSERT INTO t_worker (worker_name, worker_view_name, worker_all_num, worker_now_num, worker_unit, worker_unit_price, worker_update_time)
+        VALUES (#{workerName}, #{workerViewName}, #{workerAllNum}, #{workerNowNum}, #{workerUnit}, #{workerUnitPrice}, #{workerUpdateTime});
+    </insert>
+
+    <update id="update">
+        UPDATE t_worker
+        SET worker_view_name = #{workerViewName}, worker_all_num = #{workerAllNum}, worker_now_num = #{workerNowNum}, worker_unit = #{workerUnit}, worker_unit_price = #{workerUnitPrice},
+          worker_update_time = #{workerUpdateTime}
+        WHERE id = #{id};
+    </update>
+
+    <delete id="delById">
+        DELETE FROM t_worker
+        WHERE id = #{workerId};
+    </delete>
+
+    <select id="findAll" resultMap="WorkerMap">
+        SELECT *
+        FROM t_worker;
+    </select>
+    <select id="findById" resultType="com.kaishengit.pojo.Worker">
+        SELECT *
+        FROM t_worker
+        WHERE id = #{workerId};
+    </select>
+
+    <resultMap id="WorkerMap" type="Worker">
+        <id column="id" property="id"/>
+        <result column="worker_name" property="workerName"/>
+        <result column="worker_view_name" property="workerViewName"/>
+        <result column="worker_all_num" property="workerAllNum"/>
+        <result column="worker_now_num" property="workerNowNum"/>
+        <result column="worker_unit" property="workerUnit"/>
+        <result column="worker_unit_price" property="workerUnitPrice"/>
+        <result column="worker_create_time" property="workerCreateTime"/>
+        <result column="worker_update_time" property="workerUpdateTime"/>
+    </resultMap>
+</mapper>

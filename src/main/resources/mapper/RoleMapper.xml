@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaishengit.mapper.RoleMapper">
+    <insert id="addNewUserRole">
+        INSERT INTO
+          t_user_role (user_id, role_id)
+          VALUES (#{userId}, #{roleId});
+    </insert>
+    <delete id="delUserRoleByUserId">
+        DELETE FROM t_user_role
+        WHERE user_id = #{userId};
+    </delete>
+
+    <select id="findAll" resultType="com.kaishengit.pojo.Role">
+        SELECT *
+        FROM t_role;
+    </select>
+    <select id="findByRoleId" resultType="com.kaishengit.pojo.Role">
+        SELECT *
+        FROM t_role
+        WHERE id = #{roleId};
+    </select>
+    <select id="findByUserId" resultType="com.kaishengit.pojo.Role">
+        SELECT *
+        FROM t_role tr LEFT JOIN t_user_role tur ON tr.id = tur.role_id
+        WHERE tur.user_id = #{userId};
+    </select>
+</mapper>

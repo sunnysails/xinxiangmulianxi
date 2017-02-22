@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaishengit.mapper.DeviceMapper">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+          t_device (device_account, device_name, device_all_num, device_now_num, device_unit, device_unit_price, update_time)
+        VALUES (#{deviceAccount}, #{deviceName}, #{deviceAllNum}, #{deviceNowNum}, #{deviceUnit}, #{deviceUnitPrice}, #{updateTime});
+    </insert>
+
+    <update id="update">
+        UPDATE t_device
+        SET device_name = #{deviceName}, device_all_num = #{deviceAllNum}, device_now_num = #{deviceNowNum}, device_unit = #{deviceUnit}, device_unit_price = #{deviceUnitPrice}, update_time = #{updateTime}
+        WHERE id = #{id};
+    </update>
+
+    <delete id="delById">
+        DELETE FROM t_device
+        WHERE id = #{deviceId};
+    </delete>
+
+    <select id="findAll" resultType="com.kaishengit.pojo.Device">
+        SELECT *
+        FROM t_device;
+    </select>
+    <select id="findMaxAccount" resultType="java.lang.Integer">
+        SELECT MAX(device_account)
+        FROM t_device;
+    </select>
+    <select id="findById" resultType="com.kaishengit.pojo.Device">
+        SELECT *
+        FROM t_device
+        WHERE id = #{deviceId};
+    </select>
+
+</mapper>

@@ -135,11 +135,13 @@ public class SkyDriveServiceImpl implements SkyDriveService {
     }
 
     private void findDelId(List<SkyDrive> skyDriveList, List<Integer> delIdList, Integer id) {
-        for (SkyDrive s :
-                skyDriveList) {
+        if (delIdList.size()==skyDriveList.size()){
+            return;
+        }
+        for (SkyDrive s : skyDriveList) {
             if (s.getFid().equals(id)) {
                 delIdList.add(s.getId());
-                if (SkyDrive.DIR.equals(s.getFileType())) {
+                if (s.getFileType().equals(SkyDrive.DIR)) {
                     findDelId(skyDriveList, delIdList, id);
                 } else {
                     File file = new File(savePath, s.getFileName());

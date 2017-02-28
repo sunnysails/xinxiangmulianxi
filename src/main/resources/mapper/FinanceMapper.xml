@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaishengit.mapper.FinanceMapper">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+       INSERT INTO
+  t_finance (serial_number, type, money, state, model, finance_name, create_date, create_user, confirm_user, confirm_date, rent_serial, remark)
+VALUES
+  (#{serialNumber}, #{type}, #{money}, #{state}, #{model}, #{financeName}, #{createDate}, #{createUser}, #{confirmUser}, #{confirmDate}, #{rentSerial}, #{remark})
+    </insert>
+    <update id="update">
+        UPDATE t_finance
+        SET state = #{state}, confirm_date = #{confirmDate}, confirm_user = #{confirmUser}
+        WHERE serial_number = #{serialNumber}
+    </update>
+
+    <select id="findByQueryParam" resultType="com.kaishengit.pojo.Finance">
+        SELECT *
+        FROM t_finance
+        <where>
+            <if test="day != null and day != ''">
+                create_date = #{day}
+            </if>
+        </where>
+        ORDER BY confirm_date ASC, update_time DESC, create_date DESC
+        LIMIT ${start}, ${length}
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT count(*)
+        FROM t_finance
+        <where>
+            <choose>
+                <when test="date != null and date != '' and i == 0">
+                    create_date = #{date}
+                </when>
+                <when test="date != null and date != ''">
+                    confirm_date LIKE #{date}
+                </when>
+            </choose>
+        </where>
+    </select>
+    <select id="findByserialNumber" resultType="com.kaishengit.pojo.Finance">
+        SELECT *
+        FROM t_finance
+        WHERE serial_number = #{serialNumber}
+    </select>
+
+    <select id="findByCreateDate" resultType="com.kaishengit.pojo.Finance">
+        SELECT *
+        FROM t_finance
+        WHERE create_date = #{today}
+    </select>
+
+    <select id="findDtoByDataType" resultType="com.kaishengit.dto.FinanceDto">
+        SELECT
+        <choose>
+            <when test="i == 0">
+                tf.model AS 'name',
+            </when>
+            <otherwise>
+                tf.confirm_date AS 'name',
+            </otherwise>
+        </choose>
+        tf.money AS 'value'
+        FROM
+        t_finance AS tf
+        WHERE
+        tf.confirm_user IS NOT NULL
+        AND tf.type = #{type}
+        <choose>
+            <when test="i == 0">
+                AND tf.confirm_date = #{date}
+            </when>
+            <otherwise>
+                AND tf.confirm_date LIKE #{date}
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

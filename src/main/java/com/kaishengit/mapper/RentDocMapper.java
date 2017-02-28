@@ -13,4 +13,5 @@ public interface RentDocMapper {
     List<RentDoc> findByRentId(Integer rentId);
 
     RentDoc findById(Integer id);
+
 }

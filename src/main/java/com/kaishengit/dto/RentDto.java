@@ -8,7 +8,7 @@ import java.util.List;
  * Created by sunny on 2017/2/20.
  */
 @Data
-public class DeviceRentDto {
+public class RentDto {
 
     /**
      * deviceArray : [{"id":"3","name":"10米钢管","unit":"根","price":"2","num":"78","total":156},{"id":"1","name":"挖掘机（大）","unit":"辆","price":"500","num":"4","total":2000}]

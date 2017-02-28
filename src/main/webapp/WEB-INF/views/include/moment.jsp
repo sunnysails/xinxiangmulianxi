@@ -9,10 +9,10 @@
 <script src="//cdn.bootcss.com/moment.js/2.17.1/moment.min.js"></script>
 <script src="//cdn.bootcss.com/moment.js/2.17.1/locale/zh-cn.js"></script>
 <script>
-    $(document).ready(function () {
+/*    $(document).ready(function () {
         $(".time").text(function () {
             var time = $(this).text();
             return moment(time).format("YYYY年MM月DD日");
         });
-    });
+    });*/
 </script>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaishengit.mapper.WorkerRentDetailMapper">
+    <insert id="batchSave" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_worker_rent_detail
+        (worker_name, worker_price, out_num, total_price, rent_id, worker_id)
+        VALUES
+        <foreach collection="list" item="obj" separator=",">
+            (#{obj.workerName},#{obj.workerPrice},#{obj.outNum},#{obj.totalPrice},#{obj.rentId},#{obj.workerId})
+        </foreach>
+    </insert>
+    <select id="findByRentId" resultType="com.kaishengit.pojo.WorkerRentDetail">
+        SELECT *
+        FROM t_worker_rent_detail
+        WHERE rent_id = #{rentId}
+    </select>
+</mapper>

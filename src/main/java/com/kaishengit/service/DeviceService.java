@@ -1,6 +1,6 @@
 package com.kaishengit.service;
 
-import com.kaishengit.dto.DeviceRentDto;
+import com.kaishengit.dto.RentDto;
 import com.kaishengit.pojo.Device;
 import com.kaishengit.pojo.DeviceRent;
 import com.kaishengit.pojo.DeviceRentDetail;
@@ -26,17 +26,13 @@ public interface DeviceService {
 
     void delDeviceById(Integer deviceId);
 
-    String saveRent(DeviceRentDto deviceRentDto);
+    String saveRent(RentDto deviceRentDto);
 
     DeviceRent findDeviceRentBySerialNumber(String serialNumber);
 
     List<DeviceRentDetail> findDeviceRentDetailListByRentId(Integer rentId);
 
-    List<RentDoc> findDeviceRentDocListByRentId(Integer rentId);
-
     RentDoc findDeviceRentDocById(Integer id);
-
-    InputStream downloadFile(Integer id) throws IOException;
 
     DeviceRent findDeviceRentById(Integer id);
 

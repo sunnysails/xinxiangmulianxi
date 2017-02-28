@@ -44,16 +44,6 @@ public class HomeController {
         }
     }
 
-    //    @GetMapping("/home")
-//    public SavedRequest getSavedRequest() {
-//        SavedRequest savedRequest = null;
-//        Subject subject = SecurityUtils.getSubject();
-//        Session session = subject.getSession(true);
-//        if (session != null) {
-//            savedRequest = (SavedRequest) session.getAttribute(WebUtils.SAVED_REQUEST_KEY);
-//        }
-//        return savedRequest;
-//    }
     @GetMapping("/logout")
     public String logout(RedirectAttributes redirectAttributes) {
         //安全退出
@@ -63,7 +53,7 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
-    public String go(ServletRequest request){
+    public String go(ServletRequest request) {
         //获取登录前的Url
         try {
             String url = WebUtils.getSavedRequest(request).getRequestUrl();
@@ -72,7 +62,7 @@ public class HomeController {
             } else {
                 return "home";
             }
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             return "home";
         }
     }

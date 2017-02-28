@@ -26,7 +26,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <li><a href="/finance/day"><i class="fa fa-circle-o"></i> 日报</a></li>
-                    <li><a href="/finance/mounth"><i class="fa fa-circle-o"></i> 月报</a></li>
+                    <li><a href="/finance/month"><i class="fa fa-circle-o"></i> 月报</a></li>
                     <li><a href="/finance/year"><i class="fa fa-circle-o"></i> 年报</a></li>
                 </ul>
             </li>
@@ -59,8 +59,8 @@
                     <li>
                         <a href="#"><i class="fa fa-circle-o"></i> 劳务外包 <i class="fa fa-angle-left pull-right"></i></a>
                         <ul class="treeview-menu">
-                            <li><a href="/business/outsource"><i class="fa fa-circle-o"></i> 业务流水</a></li>
-                            <li><a href="/business/outsource/new"><i class="fa fa-plus"></i> 新增流水</a></li>
+                            <li><a href="/business/out"><i class="fa fa-circle-o"></i> 业务流水</a></li>
+                            <li><a href="/business/out/new"><i class="fa fa-plus"></i> 新增流水</a></li>
                         </ul>
                     </li>
                 </ul>

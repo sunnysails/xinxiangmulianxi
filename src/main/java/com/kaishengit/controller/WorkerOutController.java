@@ -6,12 +6,9 @@ import com.kaishengit.dto.DataTablesResult;
 import com.kaishengit.dto.RentDto;
 import com.kaishengit.exception.NotFoundException;
 import com.kaishengit.exception.ServiceException;
-import com.kaishengit.pojo.Device;
-import com.kaishengit.pojo.DeviceRent;
-import com.kaishengit.pojo.DeviceRentDetail;
-import com.kaishengit.pojo.RentDoc;
-import com.kaishengit.service.DeviceService;
+import com.kaishengit.pojo.*;
 import com.kaishengit.service.FileService;
+import com.kaishengit.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -33,42 +30,42 @@ import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 /**
- * Created by sunny on 2017/2/18.
+ * Created by sunny on 2017/2/26.
  */
 @Controller
-@RequestMapping("/business/rent")
-public class DeviceRentController {
+@RequestMapping("/business/out")
+public class WorkerOutController {
     @Autowired
-    private DeviceService deviceService;
+    private WorkerService workerService;
     @Autowired
     private FileService fileService;
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     public String newRent(Model model) {
-        List<Device> deviceList = deviceService.findAllDevice();
-        model.addAttribute("deviceList", deviceList);
-        return "/business/rent/new";
+        List<Worker> workerList = workerService.findAllWorker();
+        model.addAttribute("workerList", workerList);
+        return "/business/out/new";
+    }
+
+    @GetMapping("/worker.json")
+    @ResponseBody
+    public AjaxResult deviceJson(Integer id) {
+        Worker worker = workerService.findWorkerById(id);
+        if (worker == null) {
+            return new AjaxResult("工种不存在");
+        } else {
+            return new AjaxResult(worker);
+        }
     }
 
     @PostMapping("/new")
     @ResponseBody
-    public AjaxResult saveRent(@RequestBody RentDto deviceRentDto) {
+    public AjaxResult saveRent(@RequestBody RentDto RentDto) {
         try {
-            String serialNumber = deviceService.saveRent(deviceRentDto);
+            String serialNumber = workerService.saveRent(RentDto);
             return new AjaxResult(AjaxResult.SUCCESS, serialNumber);
         } catch (ServiceException e) {
             return new AjaxResult(e.getMessage());
-        }
-    }
-
-    @GetMapping("/device.json")
-    @ResponseBody
-    public AjaxResult deviceJson(Integer id) {
-        Device device = deviceService.findDeviceById(id);
-        if (device == null) {
-            return new AjaxResult("设备不存在");
-        } else {
-            return new AjaxResult(device);
         }
     }
 
@@ -81,20 +78,20 @@ public class DeviceRentController {
     @GetMapping("/{serialNumber:\\d+}")
     public String showDeviceRent(@PathVariable String serialNumber, Model model) {
         //1.查询合同对象
-        DeviceRent deviceRent = deviceService.findDeviceRentBySerialNumber(serialNumber);
-        if (deviceRent == null) {
+        WorkerRent workerRent = workerService.findWorkerRentBySerialNumber(serialNumber);
+        if (workerRent == null) {
             throw new NotFoundException();
         } else {
             //2.查询合同详情列表
-            List<DeviceRentDetail> detailList = deviceService.findDeviceRentDetailListByRentId(deviceRent.getId());
+            List<WorkerRentDetail> detailList = workerService.findWorkerRentDetailListByRentId(workerRent.getId());
             //3.查询合同文件列表
-            List<RentDoc> docList = fileService.findRentDocListByRentId(deviceRent.getId());
+            List<RentDoc> docList = fileService.findRentDocListByRentId(workerRent.getId());
 
-            model.addAttribute("rent", deviceRent);
+            model.addAttribute("rent", workerRent);
             model.addAttribute("detailList", detailList);
             model.addAttribute("docList", docList);
 
-            return "business/rent/show";
+            return "business/out/show";
         }
     }
 
@@ -112,7 +109,7 @@ public class DeviceRentController {
         if (inputStream == null) {
             throw new NotFoundException();
         } else {
-            RentDoc rentDoc = deviceService.findDeviceRentDocById(id);
+            RentDoc rentDoc = workerService.findWorkerRentDocById(id);
             String fileName = rentDoc.getSourceName();
 
             HttpHeaders headers = new HttpHeaders();
@@ -131,26 +128,26 @@ public class DeviceRentController {
      */
     @GetMapping("/doc/zip")
     public void downloadZipFile(Integer id, HttpServletResponse response) throws IOException {
-        DeviceRent deviceRent = deviceService.findDeviceRentById(id);
-        if (deviceRent == null) {
+        WorkerRent workerRent = workerService.findWorkerRentById(id);
+        if (workerRent == null) {
             throw new NotFoundException();
         } else {
             //将文件下载标记为二进制
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM.toString());
             //更改文件下载的名称
-            String fileName = deviceRent.getCompanyName() + ".zip";
+            String fileName = workerRent.getCompanyName() + ".zip";
             fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
             response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
 
             OutputStream outputStream = response.getOutputStream();
             ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
-            deviceService.downloadZipFile(deviceRent, zipOutputStream);
+            workerService.downloadZipFile(workerRent, zipOutputStream);
         }
     }
 
     @GetMapping
-    public String rentList() {
-        return "business/rent/list";
+    public String outList() {
+        return "business/out/list";
     }
 
     /**
@@ -170,8 +167,8 @@ public class DeviceRentController {
         queryParam.put("start", start);
         queryParam.put("length", length);
 
-        List<DeviceRent> deviceRentList = deviceService.findDeviceRentByQueryParam(queryParam);
-        Long count = deviceService.countOfDeviceRent();
+        List<WorkerRent> deviceRentList = workerService.findDWorkerRentByQueryParam(queryParam);
+        Long count = workerService.countOfWorkerRent();
 
         return new DataTablesResult(draw, count, count, deviceRentList);
     }
@@ -179,7 +176,7 @@ public class DeviceRentController {
     @PostMapping("/state/change")
     @ResponseBody
     public AjaxResult changeRentState(Integer id) {
-        deviceService.changeRentState(id);
+        workerService.changeRentState(id);
         return new AjaxResult(AjaxResult.SUCCESS);
     }
 }

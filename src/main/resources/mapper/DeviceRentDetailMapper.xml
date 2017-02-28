@@ -3,10 +3,10 @@
 <mapper namespace="com.kaishengit.mapper.DeviceRentDetailMapper">
     <insert id="batchSave" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO t_device_rent_detail
-          (device_name, device_unit, device_unit_price, rent_num, total_price, rent_id)
+          (device_name, device_unit, device_unit_price, rent_num, total_price, rent_id, device_id)
         VALUES
           <foreach collection="list" item="obj" separator=",">
-              (#{obj.deviceName},#{obj.deviceUnit},#{obj.deviceUnitPrice},#{obj.rentNum},#{obj.totalPrice},#{obj.rentId})
+              (#{obj.deviceName},#{obj.deviceUnit},#{obj.deviceUnitPrice},#{obj.rentNum},#{obj.totalPrice},#{obj.rentId},#{obj.deviceId})
           </foreach>
     </insert>
     <select id="findByRentId" resultType="com.kaishengit.pojo.DeviceRentDetail">

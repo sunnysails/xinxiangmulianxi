@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import com.kaishengit.dto.AjaxResult;
 import com.kaishengit.dto.DataTablesResult;
 import com.kaishengit.dto.FinanceDto;
-import com.kaishengit.dto.FinanceMoneyDto;
 import com.kaishengit.pojo.Finance;
 import com.kaishengit.service.FinanceService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -151,19 +150,6 @@ public class FinanceController {
         return "/finance/month";
     }
 
-    @GetMapping("/month/load")
-    @ResponseBody
-    public DataTablesResult monthData(HttpServletRequest request) {
-        String draw = request.getParameter("draw");
-
-        String month = request.getParameter("month");
-
-        List<FinanceMoneyDto> financeMoneyDtos = financeService.findByMonth(month);
-        Long count = financeService.count();
-        Long filterCount = financeService.count(month);
-        return new DataTablesResult(draw, count, filterCount, financeMoneyDtos);
-    }
-
     @GetMapping("/month/{month}/axis")
     @ResponseBody
     public AjaxResult monthAxis(@PathVariable String month) {
@@ -179,6 +165,5 @@ public class FinanceController {
     @ResponseBody
     public AjaxResult yearAxis(@PathVariable String year) {
         return new AjaxResult(financeService.findByYear(year));
-        //TODO 查询结果应为年月，不含日，待修改
     }
 }

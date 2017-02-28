@@ -150,7 +150,15 @@
                 {"data": "serialNumber"},
                 {"data": "financeName"},
                 {"data": "model"},
-                {"data": "rentSerial"},
+                {
+                    "data": function (data) {
+                        if (data.model == '设备租赁') {
+                            return "<a href='/business/rent/" + data.rentSerial + "'>" + data.rentSerial + "</a>";
+                        } else {
+                            return "<a href='/business/out/" + data.rentSerial + "'>" + data.rentSerial + "</a>";
+                        }
+                    }
+                },
                 {"data": "money"},
                 {"data": "createUser"},
                 {"data": "createDate"},

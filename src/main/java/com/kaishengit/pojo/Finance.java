@@ -13,7 +13,7 @@ public class Finance {
     public static final String FINANCE_RENT = "设备租赁";
     public static final String FINANCE_RENT_PRE = "设备租赁预付款";
     public static final String FINANCE_RENT_LAST = "设备租赁尾款";
-    public static final String FINANCE_W_OUT = "劳务外包";
+    public static final String FINANCE_W_OUT = "劳务派遣";
     public static final String FINANCE_OUT_PRE = "劳务外包预付款";
     public static final String FINANCE_OUT_LAST = "劳务外包尾款";
 

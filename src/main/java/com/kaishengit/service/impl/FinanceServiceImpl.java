@@ -36,7 +36,7 @@ public class FinanceServiceImpl implements FinanceService {
     public Long count(String day) {
         int i = 0;
         if (day.length() != 10 && !day.isEmpty()) {
-            day = day + "%";
+            day += "%";
             i++;
         }
         return financeMapper.count(day, i);
@@ -78,18 +78,39 @@ public class FinanceServiceImpl implements FinanceService {
 
     @Override
     public List<FinanceMoneyDto> findByMonth(String month) {
-        month = month + "%";
-        List<FinanceDto> inF = getFinanceDtosByDateType(month, Finance.FINANCE_IN);
-        List<FinanceDto> outF = getFinanceDtosByDateType(month, Finance.FINANCE_OUT);
-        return getFinanceMoneyDtosByInOut(inF, outF);
+        return getFinanceMoneyDtos(month);
     }
 
     @Override
     public List<FinanceMoneyDto> findByYear(String year) {
-        year = year + "%";
-        List<FinanceDto> inF = getFinanceDtosByDateType(year, Finance.FINANCE_IN);
-        List<FinanceDto> outF = getFinanceDtosByDateType(year, Finance.FINANCE_OUT);
+        return getFinanceMoneyDtos(year);
+    }
+
+    /**
+     * 根据时间模糊查找
+     *
+     * @param data
+     * @return
+     */
+    public List<FinanceMoneyDto> getFinanceMoneyDtos(String data) {
+        String d = data + "%";
+        List<FinanceDto> inF = getFinanceDtosByDateType(d, Finance.FINANCE_IN);
+        List<FinanceDto> outF = getFinanceDtosByDateType(d, Finance.FINANCE_OUT);
         return getFinanceMoneyDtosByInOut(inF, outF);
+    }
+
+    /**
+     * @param financeDtos
+     * @return
+     */
+    public List<FinanceDto> setFinanceNameToYear(List<FinanceDto> financeDtos) {
+        if (!financeDtos.isEmpty()) {
+            for (FinanceDto f :
+                    financeDtos) {
+                f.setName(f.getName().substring(0, 7));
+            }
+        }
+        return financeDtos;
     }
 
     /**
@@ -101,12 +122,12 @@ public class FinanceServiceImpl implements FinanceService {
      */
     private List<FinanceMoneyDto> getFinanceMoneyDtosByInOut(List<FinanceDto> inF, List<FinanceDto> outF) {
         List<FinanceMoneyDto> financeMoneyDtos = Lists.newArrayList();
-        FinanceMoneyDto financeMoneyDto = new FinanceMoneyDto();
         if (inF.size() == 0 && outF.size() == 0) {
             return financeMoneyDtos;
         } else if (inF.size() == 0) {
             for (FinanceDto out :
                     outF) {
+                FinanceMoneyDto financeMoneyDto = new FinanceMoneyDto();
                 financeMoneyDto.setConfirmDate(out.getName());
                 financeMoneyDto.setInMoney(0F);
                 financeMoneyDto.setOutMoney((Float) out.getValue());
@@ -115,6 +136,7 @@ public class FinanceServiceImpl implements FinanceService {
         } else if (outF.size() == 0) {
             for (FinanceDto in :
                     inF) {
+                FinanceMoneyDto financeMoneyDto = new FinanceMoneyDto();
                 financeMoneyDto.setConfirmDate(in.getName());
                 financeMoneyDto.setInMoney((Float) in.getValue());
                 financeMoneyDto.setOutMoney(0F);
@@ -126,6 +148,7 @@ public class FinanceServiceImpl implements FinanceService {
                 for (FinanceDto out :
                         outF) {
                     if (in.getName().equals(out.getName())) {
+                        FinanceMoneyDto financeMoneyDto = new FinanceMoneyDto();
                         financeMoneyDto.setConfirmDate(in.getName());
                         financeMoneyDto.setInMoney((Float) in.getValue());
                         financeMoneyDto.setOutMoney((Float) out.getValue());
@@ -154,19 +177,41 @@ public class FinanceServiceImpl implements FinanceService {
         if (financeDtoList.isEmpty()) {
             return financeDtoList;
         } else {
+            if (date.length() < 7) {
+                financeDtoList = setFinanceNameToYear(financeDtoList);
+            }
             return addValue(financeDtoList, Lists.newArrayList());
         }
     }
 
     /**
-     * 计算一天中相同类型的收入的总和
+     * 计算相同时间中相同类型的收入的总和，
      *
      * @param financeDtoList
      * @param financeDtos
      * @return
      */
     private List<FinanceDto> addValue(List<FinanceDto> financeDtoList, List<FinanceDto> financeDtos) {
-        FinanceDto financeDto = new FinanceDto();
+        while (!financeDtoList.isEmpty()){
+            FinanceDto financeDto = new FinanceDto();
+            Float v = 0F;
+            String name = financeDtoList.get(0).getName();
+            for (int i = 0; i < financeDtoList.size(); ) {
+                //比较取出name相同的value值，相加并放入新集合，同时删除该元素
+                if (financeDtoList.get(i).getName().equals(name)) {
+                    v += (Float) financeDtoList.get(i).getValue();
+                    financeDtoList.remove(i);
+                } else {
+                    i++;
+                }
+            }
+            financeDto.setName(name);
+            financeDto.setValue(v);
+            financeDtos.add(financeDto);
+        }
+        return financeDtos;
+
+/*        FinanceDto financeDto = new FinanceDto();
         Float v = 0F;
         //取出数组中第0位的name值
         String name = financeDtoList.get(0).getName();
@@ -182,9 +227,17 @@ public class FinanceServiceImpl implements FinanceService {
         financeDto.setName(name);
         financeDto.setValue(v);
         financeDtos.add(financeDto);
+*//*        if (financeDtoList.isEmpty()) {
+            return financeDtos;
+        }else {
+            return addValue(financeDtoList, financeDtos);
+        }*//*
+
+
         if (!financeDtoList.isEmpty()) {
             addValue(financeDtoList, financeDtos);
         }
-        return financeDtos;
+
+        return financeDtos;*/
     }
 }

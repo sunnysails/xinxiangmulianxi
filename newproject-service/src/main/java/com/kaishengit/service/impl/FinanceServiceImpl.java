@@ -210,34 +210,5 @@ public class FinanceServiceImpl implements FinanceService {
             financeDtos.add(financeDto);
         }
         return financeDtos;
-
-/*        FinanceDto financeDto = new FinanceDto();
-        Float v = 0F;
-        //取出数组中第0位的name值
-        String name = financeDtoList.get(0).getName();
-        for (int i = 0; i < financeDtoList.size(); ) {
-            //比较取出name相同的value值，相加并放入新集合，同时删除该元素
-            if (financeDtoList.get(i).getName().equals(name)) {
-                v += (Float) financeDtoList.get(i).getValue();
-                financeDtoList.remove(i);
-            } else {
-                i++;
-            }
-        }
-        financeDto.setName(name);
-        financeDto.setValue(v);
-        financeDtos.add(financeDto);
-*//*        if (financeDtoList.isEmpty()) {
-            return financeDtos;
-        }else {
-            return addValue(financeDtoList, financeDtos);
-        }*//*
-
-
-        if (!financeDtoList.isEmpty()) {
-            addValue(financeDtoList, financeDtos);
-        }
-
-        return financeDtos;*/
     }
 }
